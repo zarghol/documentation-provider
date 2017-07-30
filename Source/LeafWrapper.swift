@@ -105,7 +105,7 @@ var leafContent = """
         <meta charset="utf-8" />
         <title>#(title)</title>
         <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700,300" rel="stylesheet">
-        <style>\(cssContent)</style>
+        <style>#raw() { \(cssContent) }</style>
         <meta name="viewport" content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width">
     </head>
     <body>
