@@ -6,6 +6,7 @@
 //
 
 import Vapor
+import LeafProvider
 
 final class DocumentationController {
     let docs: [RouteDocumentation]
@@ -17,7 +18,11 @@ final class DocumentationController {
     }
     
     func index(req: Request) throws -> ResponseRepresentable {
-        return try renderer.make("doc.leaf", ["definitions": docs], for: req)
+        let context: NodeRepresentable = ["definitions": docs]
+        guard let renderer = renderer as? LeafRenderer else {
+            return try self.renderer.make("doc", context, for: req)
+        }
+        return try renderer.make(content: leafContent, context, for: req)
     }
 }
 
