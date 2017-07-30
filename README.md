@@ -42,7 +42,8 @@ The page is rendered via Leaf.
 
 - [ ] Parameterized the route
 - [ ] Parameterized the log level for warning about the infos providers
-- [ ] allow to hide some routes to not display it on the page
+- [ ] Allow to hide some routes to not display it on the page
+- [ ] Allow to use a custom css ? Or at least a custom leaf template, and document the provided context
 
 ## Contribute
 
