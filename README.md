@@ -40,6 +40,7 @@ The page is rendered via Leaf.
 
 ## TODO
 
+- [ ] Add Unit Test (and maybe circleCI)
 - [ ] Parameterized the route
 - [ ] Parameterized the log level for warning about the infos providers
 - [ ] Allow to hide some routes to not display it on the page
