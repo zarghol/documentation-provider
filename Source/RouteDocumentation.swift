@@ -21,7 +21,7 @@ public struct RouteDocumentation {
             ]
         }
         
-        init(description: String, pathParameters: [String: String] = [:], queryParameters: [String: String] = [:]) {
+        public init(description: String, pathParameters: [String: String] = [:], queryParameters: [String: String] = [:]) {
             self.description = description
             self.pathParameters = pathParameters
             self.queryParameters = queryParameters
@@ -39,7 +39,7 @@ public struct RouteDocumentation {
 }
 
 extension RouteDocumentation {
-    init(route: String) {
+    public init(route: String) {
         let components = route.components(separatedBy: .whitespaces)
         let host = components[0]
         let method = components[1]
@@ -81,6 +81,5 @@ extension RouteDocumentation: NodeRepresentable {
             "hasParameter": hasParameter,
             "parameters": additionalInfos.parametersRepresentation
         ].makeNode(in: context)
-
     }
 }

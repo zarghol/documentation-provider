@@ -14,7 +14,10 @@ public final class Provider: Vapor.Provider {
         case conflictingInfos(old: RouteDocumentation.AdditionalInfos, new: RouteDocumentation.AdditionalInfos)
     }
     
-    static private(set)var current: Provider!
+    /// The current provider initialized by the Droplet
+    ///
+    /// Use it for provide custom informations
+    static public private(set)var current: Provider!
     
     public static let repositoryName = "documentation-provider"
     
