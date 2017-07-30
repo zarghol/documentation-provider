@@ -23,6 +23,8 @@ public final class Provider: Vapor.Provider {
     
     private(set) var infosProvider = [DocumentationInfoProvider.Type]()
     
+    private let view = LeafRenderer(viewsDir: "/")
+    
     /// Register a Documentation Info Provider.
     public func provideInfo(_ provider: DocumentationInfoProvider.Type) {
         infosProvider.append(provider)
@@ -35,9 +37,7 @@ public final class Provider: Vapor.Provider {
     public func boot(_ config: Config) throws { }
     
     public func boot(_ droplet: Droplet) throws {
-        if let leaf = droplet.view as? LeafRenderer {
-            leaf.stem.register(Empty())
-        }
+        view.stem.register(Empty())
     }
     
     public func beforeRun(_ droplet: Droplet) throws {
@@ -68,14 +68,7 @@ public final class Provider: Vapor.Provider {
     }
     
     private func registerController(documentation: [RouteDocumentation], droplet: Droplet) throws {
-        //  provide a custom view renderer to prevent not leaf renderer
-        let view: LeafRenderer
-        if let dropletRenderer = droplet.view as? LeafRenderer {
-            view = dropletRenderer
-        } else {
-            
-            view = LeafRenderer(viewsDir: droplet.config.viewsDir)
-        }
+        // use custom renderer if the app use a different one, and with directory for file in the package
         
         let documentationController = DocumentationController(documentation, renderer: view)
         
