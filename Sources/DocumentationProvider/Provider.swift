@@ -32,13 +32,12 @@ public final class Provider: Vapor.Provider {
     
     public init(config: Config) throws {
         Provider.current = self
+        view.stem.register(Empty())
     }
     
     public func boot(_ config: Config) throws { }
     
-    public func boot(_ droplet: Droplet) throws {
-        view.stem.register(Empty())
-    }
+    public func boot(_ droplet: Droplet) throws { }
     
     public func beforeRun(_ droplet: Droplet) throws {
         // Generate documentation
