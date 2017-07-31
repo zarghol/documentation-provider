@@ -2,6 +2,7 @@
 
 <a href="LICENSE"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License"></a>
 <a href="https://swift.org"><img src="http://img.shields.io/badge/swift-3.1-brightgreen.svg" alt="Swift 3.1"></a>
+<a href="https://circleci.com/gh/zarghol/documentation-provider/tree/master"><img src="https://circleci.com/gh/zarghol/documentation-provider/tree/master.svg?style=svg" alt="CircleCI"></a>
 
 Allows you to build a documentation page for all your services served via the droplet.
 The page is rendered via Leaf.
