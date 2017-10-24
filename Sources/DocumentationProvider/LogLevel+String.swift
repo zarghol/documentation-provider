@@ -1,11 +1,11 @@
 //
 //  LogLevel+String.swift
-//  DocumentationProviderPackageDescription
+//  DocumentationProvider
 //
 //  Created by clement on 24/10/2017.
 //
 
-import Foundation
+import Vapor
 
 extension LogLevel {
     init(strValue: String) {
