@@ -44,7 +44,7 @@ The page is rendered via Leaf.
 ## TODO
 
 - [x] Add Unit Test (and maybe circleCI)
-- [ ] Parameterized the route
+- [x] Parameterized the route
 - [ ] Parameterized the log level for warning about the infos providers
 - [ ] Allow to hide some routes to not display it on the page
 - [ ] Allow to use a custom css ? Or at least a custom leaf template, and document the provided context
