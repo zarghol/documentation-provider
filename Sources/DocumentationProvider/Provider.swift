@@ -25,12 +25,16 @@ public final class Provider: Vapor.Provider {
     
     private let view = LeafRenderer(viewsDir: "/")
     
+    let path: String
+    
     /// Register a Documentation Info Provider.
     public func provideInfo(_ provider: DocumentationInfoProvider.Type) {
         infosProvider.append(provider)
     }
     
     public init(config: Config) throws {
+        self.path = config["path"]?.string ?? "docs"
+
         Provider.current = self
         view.stem.register(Empty())
     }
@@ -71,7 +75,7 @@ public final class Provider: Vapor.Provider {
         
         let documentationController = DocumentationController(documentation, renderer: view)
         
-        try droplet.grouped("docs").collection(documentationController)
+        try droplet.grouped(path).collection(documentationController)
     }
     
     private func generateAdditionalInfos() throws -> [String: RouteDocumentation.AdditionalInfos] {
