@@ -33,9 +33,10 @@ public final class Provider: Vapor.Provider {
     }
     
     public init(config: Config) throws {
+        self.path = config["path"]?.string ?? "docs"
+
         Provider.current = self
         view.stem.register(Empty())
-        self.path = config["path"] ?? "docs"
     }
     
     public func boot(_ config: Config) throws { }
