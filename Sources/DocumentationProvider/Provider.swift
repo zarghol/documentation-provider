@@ -37,12 +37,8 @@ public final class Provider: Vapor.Provider {
     public init(config: Config) throws {
         self.logger = try config.resolveLog()
         
-        guard let docConfig = config["doc"] else {
-            throw ConfigError.missingFile("doc")
-        }
-        
-        self.path = docConfig["path"]?.string ?? "docs"
-        self.logger.enabled = docConfig["logLevels"]?.array?.flatMap({ $0.string }).map { LogLevel(strValue: $0) }
+        self.path = config["doc", "path"]?.string ?? "docs"
+        self.logger.enabled = config["doc", "logLevels"]?.array?.flatMap({ $0.string }).map { LogLevel(strValue: $0) }
             ?? [.warning, .error, .fatal]
 
         Provider.current = self
