@@ -47,6 +47,7 @@ public final class Provider: Vapor.Provider {
 
         Provider.current = self
         view.stem.register(Empty())
+        self.logger.info("[DocumentationProvider] doc provider initialized")
     }
     
     public func boot(_ config: Config) throws { }
@@ -56,6 +57,7 @@ public final class Provider: Vapor.Provider {
     public func beforeRun(_ droplet: Droplet) throws {
         // Generate documentation
         let infos = try self.generateAdditionalInfos()
+        self.logger.info("[DocumentationProvider] infos generated")
 
         var documentation = [RouteDocumentation]()
         for route in droplet.router.routes {
@@ -64,8 +66,9 @@ public final class Provider: Vapor.Provider {
             // If additional infos provided for the route, we add it
             if let additionalInfos = infos[route] {
                 doc.additionalInfos = additionalInfos
+                self.logger.verbose("[DocumentationProvider] additional info added for '\(route)'")
             }  else {
-                droplet.log.info("[DocumentationProvider] No additional Info for route : '\(route)'")
+                self.logger.warning("[DocumentationProvider] No additional Info for route : '\(route)'")
             }
             documentation.append(doc)
         }
@@ -77,6 +80,8 @@ public final class Provider: Vapor.Provider {
             left.path < right.path
         }
         
+        self.logger.info("[DocumentationProvider] docs sorted")
+        
         try registerController(documentation: documentation, droplet: droplet)
     }
     
@@ -84,13 +89,16 @@ public final class Provider: Vapor.Provider {
         // use custom renderer if the app use a different one, and with directory for file in the package
         
         let documentationController = DocumentationController(documentation, renderer: view)
+        self.logger.info("[DocumentationProvider] controller created")
         
         try droplet.grouped(path).collection(documentationController)
+        self.logger.info("[DocumentationProvider] controller added to the group : '\(path)'")
     }
     
     private func generateAdditionalInfos() throws -> [String: RouteDocumentation.AdditionalInfos] {
         var infos = [String: RouteDocumentation.AdditionalInfos]()
         for type in infosProvider {
+            // Make sure there is only one documentation for one route
             try infos.merge(type.documentation, uniquingKeysWith: { (old, new) -> RouteDocumentation.AdditionalInfos in
                 throw Error.conflictingInfos(old: old, new: new)
             })
