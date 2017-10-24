@@ -27,13 +27,23 @@ public final class Provider: Vapor.Provider {
     
     let path: String
     
+    private let logger: LogProtocol
+    
     /// Register a Documentation Info Provider.
     public func provideInfo(_ provider: DocumentationInfoProvider.Type) {
         infosProvider.append(provider)
     }
     
     public init(config: Config) throws {
-        self.path = config["path"]?.string ?? "docs"
+        self.logger = try config.resolveLog()
+        
+        guard let docConfig = config["doc"] else {
+            throw ConfigError.missingFile("doc")
+        }
+        
+        self.path = docConfig["path"]?.string ?? "docs"
+        self.logger.enabled = docConfig["logLevels"]?.array?.flatMap({ $0.string }).map { LogLevel(strValue: $0) }
+            ?? [.warning, .error, .fatal]
 
         Provider.current = self
         view.stem.register(Empty())
