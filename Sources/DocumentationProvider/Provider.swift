@@ -30,9 +30,19 @@ public final class Provider: Vapor.Provider {
     
     private let logger: LogProtocol
     
+    var hiddenRoute = [String]()
+    
     /// Register a Documentation Info Provider.
     public func provideInfo(_ provider: DocumentationInfoProvider.Type) {
         infosProvider.append(provider)
+        
+        if let hider = provider as? DocumentationInfoHider.Type {
+            self.hiddenRoute.append(contentsOf: hider.hiddenPath)
+        }
+    }
+    
+    public func hideRoute(_ route: String) {
+        self.hiddenRoute.append(route)
     }
     
     public init(config: Config) throws {
@@ -59,7 +69,7 @@ public final class Provider: Vapor.Provider {
         self.logger.info("[DocumentationProvider] infos generated")
 
         var documentation = [RouteDocumentation]()
-        for route in droplet.router.routes {
+        for route in droplet.router.routes where !self.hiddenRoute.contains(route) {
             // Initialize the doc with the path
             var doc = RouteDocumentation(route: route)
             // If additional infos provided for the route, we add it
@@ -70,6 +80,12 @@ public final class Provider: Vapor.Provider {
                 self.logger.warning("[DocumentationProvider] No additional Info for route : '\(route)'")
             }
             documentation.append(doc)
+        }
+        
+        if self.logger.enabled.contains(.verbose) {
+            for hidden in self.hiddenRoute {
+                self.logger.verbose("[DocumentationProvider] Route '\(hidden)' is hidden")
+            }
         }
         
         // Sort the docs by path then by method
@@ -106,7 +122,13 @@ public final class Provider: Vapor.Provider {
     }
 }
 
+typealias DocumentationInfoManager = DocumentationInfoProvider & DocumentationInfoHider
+
 public protocol DocumentationInfoProvider {
     static var documentation: [String: RouteDocumentation.AdditionalInfos] { get }
+}
+
+public protocol DocumentationInfoHider {
+    static var hiddenPath: [String] { get }
 }
 
