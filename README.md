@@ -18,11 +18,19 @@ The page is rendered via Leaf.
    A new route is now created at **/docs**.
    By default, the documentation displays all routes of the droplet.
 
-2. *(optional)* You can use a config file for some changes.
+2. *(optional)* You can use a config file named **doc.json** for some changes.
 
  Here is the configurations available :
  - The path of the doc. Key : `path`. Default value : `/docs`
  - The log levels used only this provider (allows you to use another set of your application). Key: `logLevels`. Default value : `["WARNING", "ERROR", "FATAL"]` Others values available : `"VERBOSE", "DEBUG", "INFO"`
+ - Customize the view.  Key : `view`. Default value : use the basic template.
+     - Key : `customPath`. Allows you to use a custom leaf file to display documentations. Be sure to use the context["definitions"] to display infos. You can see the infos in **RouteDocumentation**.
+     
+      **OR**
+     
+     - Keys : `customCSS`, `customBody`, `customStructure`. Allows you to customize just the block you need from the basic template by specifiying directly leaf code.
+     
+        *Note :* The structure is used as a format, with css first and body then. It is the body that use the context for display the documentation.
 
 3. *(optional)* Provide additional informations to display, or hide some routes.
 
@@ -61,7 +69,7 @@ The page is rendered via Leaf.
 - [x] Parameterized the route
 - [x] Parameterized the log level for warning about the infos providers
 - [x] Allow to hide some routes to not display it on the page
-- [ ] Allow to use a custom css ? Or at least a custom leaf template, and document the provided context
+- [x] Allow to use a custom css ? Or at least a custom leaf template, and document the provided context
 
 ## Contribute
 
