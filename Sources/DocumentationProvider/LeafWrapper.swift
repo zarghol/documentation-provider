@@ -137,7 +137,7 @@ let structure = """
 
 let docsBody = """
     <div class="panel">
-        <h2>API v1</h2>
+        <h2>API</h2>
         #loop(definitions, "definition") {
             <p>
                 <h3>#(definition.method) - <span class="code"> #(definition.path)</span></h3>
