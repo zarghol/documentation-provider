@@ -8,6 +8,7 @@
 
 import Vapor
 import LeafProvider
+import Console
 
 public final class Provider: Vapor.Provider {
     public enum Error: Swift.Error {
@@ -35,7 +36,9 @@ public final class Provider: Vapor.Provider {
     }
     
     public init(config: Config) throws {
-        self.logger = try config.resolveLog()
+        // Cannot resolve logger from config : log-console is not contained in Config.resolvable here...
+        let console = try Terminal(config: config)
+        self.logger = ConsoleLogger(console)
         
         self.path = config["doc", "path"]?.string ?? "docs"
         self.logger.enabled = config["doc", "logLevels"]?.array?.flatMap({ $0.string }).map { LogLevel(strValue: $0) }
