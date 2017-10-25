@@ -24,11 +24,15 @@ public final class Provider: Vapor.Provider {
     
     private(set) var infosProvider = [DocumentationInfoProvider.Type]()
     
-    private let view = LeafRenderer(viewsDir: "/")
+    private let leafRenderer = LeafRenderer(viewsDir: "/")
+    
+    var view: DocumentationView
     
     let path: String
     
     private let logger: LogProtocol
+    
+    var renderingMode = DocumentationView.basic
     
     var hiddenRoute = [String]()
     
@@ -53,9 +57,40 @@ public final class Provider: Vapor.Provider {
         self.path = config["doc", "path"]?.string ?? "docs"
         self.logger.enabled = config["doc", "logLevels"]?.array?.flatMap({ $0.string }).map { LogLevel(strValue: $0) }
             ?? [.warning, .error, .fatal]
-
+        
+        if let viewConfig = config["doc", "view"] {
+            if let customPath = viewConfig["customPath"]?.string {
+                view = .customPath(customPath)
+            } else {
+                let customCSS: DocumentationCSS
+                if let customCSSContent = viewConfig["customCSS"]?.string {
+                    customCSS = .custom(customCSSContent)
+                } else {
+                    customCSS = .basic
+                }
+                
+                let customBody: DocumentationBody
+                if let customBodyContent = viewConfig["customBody"]?.string {
+                    customBody = .custom(customBodyContent)
+                } else {
+                    customBody = .basic
+                }
+                
+                let customStructure: DocumentationStructure
+                if let customStructureContent = viewConfig["customStructure"]?.string {
+                    customStructure = .custom(customStructureContent)
+                } else {
+                    customStructure = .basic
+                }
+                
+                view = .custom(structure: customStructure, body: customBody, css: customCSS)
+            }
+        } else {
+            view = .basic
+        }
+        
         Provider.current = self
-        view.stem.register(Empty())
+        leafRenderer.stem.register(Empty())
         self.logger.info("[DocumentationProvider] doc provider initialized")
     }
     
@@ -103,7 +138,7 @@ public final class Provider: Vapor.Provider {
     private func registerController(documentation: [RouteDocumentation], droplet: Droplet) throws {
         // use custom renderer if the app use a different one, and with directory for file in the package
         
-        let documentationController = DocumentationController(documentation, renderer: view)
+        let documentationController = DocumentationController(documentation, renderer: leafRenderer, view: view)
         self.logger.info("[DocumentationProvider] controller created")
         
         try droplet.grouped(path).collection(documentationController)

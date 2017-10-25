@@ -7,6 +7,10 @@
 
 // This is a workaround for embedding the resources in the library
 
+
+
+// MARK: - raw content
+
 let cssContent = """
     /** Regular */
     @font-face {
@@ -98,61 +102,65 @@ let cssContent = """
     }
 """
 
-var leafContent = """
+let structure = """
     <!DOCTYPE html>
     <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>#(title)</title>
-        <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700,300" rel="stylesheet">
-        <style>#raw() { \(cssContent) }</style>
-        <meta name="viewport" content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width">
-    </head>
-    <body>
-        <header>
-        #raw() {
-            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 -5 48 60" enable-background="new 0 0 48 48" xml:space="preserve" id="droplet">
-                <defs>
-                    <linearGradient id="linear" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%"   stop-color="#F7CAC9"/>
-                        <stop offset="100%" stop-color="#92A8D1"/>
-                    </linearGradient>
-                </defs>
-                <path stroke="url(#linear)" fill="white" fill-opacity="0" stroke-width="3" d="M24.8,0.9c-0.4-0.5-1.2-0.5-1.6,0C19.8,5.3,7.1,22.5,7.1,30.6c0,9.3,7.6,16.9,16.9,16.9s16.9-7.6,16.9-16.9  C40.9,22.5,28.2,5.3,24.8,0.9z"/>
-            </svg>
-            <span class="title">Documentation</span>
-        }
-        </header>
-        <div class="panel">
-            <h2>API v1</h2>
-            #loop(definitions, "definition") {
-                <p>
-                    <h3>#(definition.method) - <span class="code"> #(definition.path)</span></h3>
-                    #(definition.description)<br/>
-                    #if(definition.hasParameter) {
-                        #empty(definition.parameters.path) {
-                        } ##else() {
-                            <h4>Path Parameters</h4>
-                            #loop(definition.parameters.path, "parameter") {
-                                <span class="code"> #(parameter.key) </span> : #(parameter.value)<br/>
-                            }
-                        }
-                        #empty(definition.parameters.query) {
-                        } ##else() {
-                            <br/>
-                            <h4>Query Parameters</h4>
-                            #loop(definition.parameters.query, "parameter") {
-                                <span class="code"> #(parameter.key) </span> : #(parameter.value)<br/>
-                            }
+        <head>
+            <meta charset="utf-8" />
+            <title>#(title)</title>
+            <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700,300" rel="stylesheet">
+            <style>#raw() { %@ }</style>
+            <meta name="viewport" content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width">
+        </head>
+        <body>
+            <header>
+                #raw() {
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 -5 48 60" enable-background="new 0 0 48 48" xml:space="preserve" id="droplet">
+                        <defs>
+                            <linearGradient id="linear" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%"   stop-color="#F7CAC9"/>
+                                <stop offset="100%" stop-color="#92A8D1"/>
+                            </linearGradient>
+                        </defs>
+                        <path stroke="url(#linear)" fill="white" fill-opacity="0" stroke-width="3" d="M24.8,0.9c-0.4-0.5-1.2-0.5-1.6,0C19.8,5.3,7.1,22.5,7.1,30.6c0,9.3,7.6,16.9,16.9,16.9s16.9-7.6,16.9-16.9  C40.9,22.5,28.2,5.3,24.8,0.9z"/>
+                    </svg>
+                    <span class="title">Documentation</span>
+                }
+            </header>
+            %@
+            <footer>
+                HTML powered by <a href="https://github.com/vapor/leaf">🍃Leaf</a>.
+            </footer>
+        </body>
+    </html>
+"""
+
+let docsBody = """
+    <div class="panel">
+        <h2>API v1</h2>
+        #loop(definitions, "definition") {
+            <p>
+                <h3>#(definition.method) - <span class="code"> #(definition.path)</span></h3>
+                #(definition.description)<br/>
+                #if(definition.hasParameter) {
+                    #empty(definition.parameters.path) {
+                    } ##else() {
+                        <h4>Path Parameters</h4>
+                        #loop(definition.parameters.path, "parameter") {
+                            <span class="code"> #(parameter.key) </span> : #(parameter.value)<br/>
                         }
                     }
-                </p>
-                <hr/>
-            }
-        </div>
-        <footer>
-            HTML powered by <a href="https://github.com/vapor/leaf">🍃Leaf</a>.
-        </footer>
-    </body>
-    </html>
+                    #empty(definition.parameters.query) {
+                    } ##else() {
+                        <br/>
+                        <h4>Query Parameters</h4>
+                        #loop(definition.parameters.query, "parameter") {
+                            <span class="code"> #(parameter.key) </span> : #(parameter.value)<br/>
+                        }
+                    }
+                }
+            </p>
+            <hr/>
+        }
+    </div>
 """
