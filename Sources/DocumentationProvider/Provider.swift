@@ -31,9 +31,7 @@ public final class Provider: Vapor.Provider {
     let path: String
     
     private let logger: LogProtocol
-    
-    var renderingMode = DocumentationView.basic
-    
+        
     var hiddenRoute = [String]()
     
     /// Register a Documentation Info Provider.
