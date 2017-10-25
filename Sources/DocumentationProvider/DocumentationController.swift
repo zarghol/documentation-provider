@@ -12,9 +12,12 @@ final class DocumentationController {
     let docs: [RouteDocumentation]
     let renderer: ViewRenderer
     
-    init(_ documentation: [RouteDocumentation], renderer: ViewRenderer) {
+    let view: DocumentationView
+    
+    init(_ documentation: [RouteDocumentation], renderer: ViewRenderer, view: DocumentationView) {
         self.docs = documentation
         self.renderer = renderer
+        self.view = view
     }
     
     func index(req: Request) throws -> ResponseRepresentable {
@@ -22,7 +25,8 @@ final class DocumentationController {
         guard let renderer = renderer as? LeafRenderer else {
             return try self.renderer.make("doc", context, for: req)
         }
-        return try renderer.make(content: leafContent, context, for: req)
+        
+        return try view.render(with: renderer, context: context, for: req)
     }
 }
 
